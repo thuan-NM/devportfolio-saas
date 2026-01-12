@@ -2,15 +2,368 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-// Employee model for HRMS system
+// ============================================
+// DEVPORTFOLIO SAAS - DATABASE SCHEMA
+// ============================================
+
+// User Management
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  username      String    @unique
+  password      String
+  firstName     String    @map("first_name")
+  lastName      String    @map("last_name")
+  avatarUrl     String?   @map("avatar_url")
+  bio           String?   @db.Text
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true) @map("is_active")
+  isVerified    Boolean   @default(false) @map("is_verified")
+  lastLoginAt   DateTime? @map("last_login_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  portfolios    Portfolio[]
+  projects      Project[]
+  experiences   Experience[]
+  educations    Education[]
+  skills        UserSkill[]
+  certifications Certification[]
+  socialLinks   SocialLink[]
+  templates     Template[]
+  subscriptions Subscription[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// Portfolio/Profile
+model Portfolio {
+  id              String          @id @default(uuid())
+  userId          String          @map("user_id")
+  title           String
+  slug            String          @unique
+  tagline         String?
+  description     String?         @db.Text
+  theme           String          @default("default")
+  customDomain    String?         @unique @map("custom_domain")
+  isPublic        Boolean         @default(true) @map("is_public")
+  isPublished     Boolean         @default(false) @map("is_published")
+  viewCount       Int             @default(0) @map("view_count")
+  templateId      String?         @map("template_id")
+  metadata        Json?           @db.JsonB
+  seoTitle        String?         @map("seo_title")
+  seoDescription  String?         @map("seo_description")
+  seoKeywords     String[]        @map("seo_keywords")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  // Relations
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template        Template?       @relation(fields: [templateId], references: [id])
+  sections        PortfolioSection[]
+
+  @@index([userId])
+  @@index([slug])
+  @@map("portfolios")
+}
+
+// Portfolio Sections
+model PortfolioSection {
+  id          String    @id @default(uuid())
+  portfolioId String    @map("portfolio_id")
+  type        SectionType
+  title       String
+  content     Json?     @db.JsonB
+  order       Int       @default(0)
+  isVisible   Boolean   @default(true) @map("is_visible")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId])
+  @@map("portfolio_sections")
+}
+
+enum SectionType {
+  HERO
+  ABOUT
+  PROJECTS
+  EXPERIENCE
+  EDUCATION
+  SKILLS
+  CERTIFICATIONS
+  TESTIMONIALS
+  CONTACT
+  CUSTOM
+}
+
+// Projects
+model Project {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  title           String
+  slug            String
+  description     String    @db.Text
+  shortDescription String?  @map("short_description") @db.Text
+  thumbnailUrl    String?   @map("thumbnail_url")
+  imageUrls       String[]  @map("image_urls")
+  technologies    String[]
+  category        String?
+  projectUrl      String?   @map("project_url")
+  githubUrl       String?   @map("github_url")
+  demoUrl         String?   @map("demo_url")
+  status          ProjectStatus @default(COMPLETED)
+  startDate       DateTime? @map("start_date")
+  endDate         DateTime? @map("end_date")
+  isFeatured      Boolean   @default(false) @map("is_featured")
+  isPublic        Boolean   @default(true) @map("is_public")
+  order           Int       @default(0)
+  viewCount       Int       @default(0) @map("view_count")
+  metadata        Json?     @db.JsonB
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, slug])
+  @@index([userId])
+  @@index([isFeatured])
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+  ARCHIVED
+}
+
+// Work Experience
+model Experience {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  company         String
+  position        String
+  employmentType  EmploymentType @map("employment_type")
+  location        String?
+  locationType    LocationType @default(ONSITE) @map("location_type")
+  description     String?   @db.Text
+  achievements    String[]
+  technologies    String[]
+  startDate       DateTime  @map("start_date")
+  endDate         DateTime? @map("end_date")
+  isCurrent       Boolean   @default(false) @map("is_current")
+  order           Int       @default(0)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("experiences")
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  FREELANCE
+  INTERNSHIP
+}
+
+enum LocationType {
+  ONSITE
+  REMOTE
+  HYBRID
+}
+
+// Education
+model Education {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  institution     String
+  degree          String
+  fieldOfStudy    String    @map("field_of_study")
+  grade           String?
+  description     String?   @db.Text
+  startDate       DateTime  @map("start_date")
+  endDate         DateTime? @map("end_date")
+  isCurrent       Boolean   @default(false) @map("is_current")
+  order           Int       @default(0)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("educations")
+}
+
+// Skills
+model Skill {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  category    String?
+  icon        String?
+  description String?     @db.Text
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  userSkills  UserSkill[]
+
+  @@map("skills")
+}
+
+model UserSkill {
+  id          String      @id @default(uuid())
+  userId      String      @map("user_id")
+  skillId     String      @map("skill_id")
+  proficiency SkillLevel  @default(INTERMEDIATE)
+  yearsOfExperience Int?  @map("years_of_experience")
+  order       Int         @default(0)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill       @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@map("user_skills")
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+// Certifications
+model Certification {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  name            String
+  issuingOrg      String    @map("issuing_organization")
+  issueDate       DateTime  @map("issue_date")
+  expiryDate      DateTime? @map("expiry_date")
+  credentialId    String?   @map("credential_id")
+  credentialUrl   String?   @map("credential_url")
+  description     String?   @db.Text
+  order           Int       @default(0)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("certifications")
+}
+
+// Social Links
+model SocialLink {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  platform    String
+  url         String
+  icon        String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("social_links")
+}
+
+// Templates
+model Template {
+  id          String      @id @default(uuid())
+  name        String
+  slug        String      @unique
+  description String?     @db.Text
+  thumbnail   String?
+  previewUrl  String?     @map("preview_url")
+  category    String?
+  tags        String[]
+  isPremium   Boolean     @default(false) @map("is_premium")
+  isPublic    Boolean     @default(true) @map("is_public")
+  config      Json        @db.JsonB
+  createdBy   String?     @map("created_by")
+  usageCount  Int         @default(0) @map("usage_count")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  creator     User?       @relation(fields: [createdBy], references: [id])
+  portfolios  Portfolio[]
+
+  @@index([isPremium])
+  @@map("templates")
+}
+
+// Subscriptions
+model Subscription {
+  id              String            @id @default(uuid())
+  userId          String            @map("user_id")
+  plan            SubscriptionPlan
+  status          SubscriptionStatus @default(ACTIVE)
+  startDate       DateTime          @map("start_date")
+  endDate         DateTime?         @map("end_date")
+  cancelAtPeriodEnd Boolean         @default(false) @map("cancel_at_period_end")
+  stripeCustomerId String?          @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?      @unique @map("stripe_subscription_id")
+  metadata        Json?             @db.JsonB
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  // Relations
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAUSED
+}
+
+// Legacy Employee model (keeping for backward compatibility)
 model Employee {
   id          String   @id @default(uuid())
   employeeId  String   @unique @map("employee_id")
