@@ -109,3 +109,5 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+
+/docs
