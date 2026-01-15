@@ -98,6 +98,80 @@
   .animate-fade-in {
     animation: fadeIn 0.2s ease-out;
   }
+
+  /* ==================== Notion-style Auth Page ==================== */
+  .auth-page {
+    @apply min-h-screen bg-white flex items-center justify-center;
+  }
+
+  .auth-container {
+    @apply w-full max-w-[400px] px-6 py-8;
+  }
+
+  .auth-logo {
+    @apply text-center mb-8;
+  }
+
+  .auth-title {
+    @apply text-2xl font-semibold text-gray-900 text-center mb-2;
+  }
+
+  .auth-subtitle {
+    @apply text-sm text-gray-500 text-center mb-8;
+  }
+
+  .auth-input {
+    @apply w-full h-11 px-4 text-sm bg-white border border-gray-200 rounded-md
+         focus:outline-none focus:border-gray-400 focus:ring-0
+         placeholder:text-gray-400 transition-colors duration-150;
+  }
+
+  .auth-input:hover {
+    @apply border-gray-300;
+  }
+
+  .auth-btn-primary {
+    @apply w-full h-11 bg-gray-900 hover:bg-black text-white text-sm font-medium
+         rounded-md transition-colors duration-150 cursor-pointer;
+  }
+
+  .auth-btn-primary:disabled {
+    @apply bg-gray-300 cursor-not-allowed;
+  }
+
+  .auth-btn-social {
+    @apply w-full h-11 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium
+         border border-gray-200 rounded-md transition-colors duration-150
+         flex items-center justify-center gap-3 cursor-pointer;
+  }
+
+  .auth-btn-social:hover {
+    @apply border-gray-300;
+  }
+
+  .auth-divider {
+    @apply flex items-center gap-4 my-6;
+  }
+
+  .auth-divider-line {
+    @apply flex-1 h-px bg-gray-200;
+  }
+
+  .auth-divider-text {
+    @apply text-xs text-gray-400 uppercase tracking-wide;
+  }
+
+  .auth-link {
+    @apply text-sm text-gray-500 hover:text-gray-900 transition-colors cursor-pointer;
+  }
+
+  .auth-link-primary {
+    @apply text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors cursor-pointer;
+  }
+
+  .auth-footer {
+    @apply text-center mt-8 text-sm text-gray-500;
+  }
 }
 
 /* Sidebar Scrollbar - Reusable utility using CSS variables */
