@@ -7,8 +7,8 @@ import { EmployeesRepository } from './employees.repository.js';
 import { EmployeesService } from './employees.service.js';
 
 @Module({
-    controllers: [EmployeesController],
-    providers: [EmployeesService, EmployeesRepository],
-    exports: [EmployeesService, EmployeesRepository],
+  controllers: [EmployeesController],
+  providers: [EmployeesService, EmployeesRepository],
+  exports: [EmployeesService, EmployeesRepository],
 })
-export class EmployeesModule { }
+export class EmployeesModule {}

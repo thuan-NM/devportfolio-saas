@@ -9,4 +9,4 @@ import { EmployeesModule } from './modules/employees/employees.module.js';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
