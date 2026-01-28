@@ -2,51 +2,51 @@
 // DTO for updating an employee
 
 import {
-    IsBoolean,
-    IsDateString,
-    IsEmail,
-    IsNumber,
-    IsOptional,
-    IsPositive,
-    IsString,
-    MaxLength,
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
 } from 'class-validator';
 
 export class UpdateEmployeeDto {
-    @IsString()
-    @IsOptional()
-    @MaxLength(100)
-    firstName?: string;
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  firstName?: string;
 
-    @IsString()
-    @IsOptional()
-    @MaxLength(100)
-    lastName?: string;
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  lastName?: string;
 
-    @IsEmail()
-    @IsOptional()
-    email?: string;
+  @IsEmail()
+  @IsOptional()
+  email?: string;
 
-    @IsString()
-    @IsOptional()
-    @MaxLength(100)
-    department?: string;
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  department?: string;
 
-    @IsString()
-    @IsOptional()
-    @MaxLength(100)
-    position?: string;
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  position?: string;
 
-    @IsNumber()
-    @IsPositive()
-    @IsOptional()
-    salary?: number;
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  salary?: number;
 
-    @IsDateString()
-    @IsOptional()
-    hireDate?: string;
+  @IsDateString()
+  @IsOptional()
+  hireDate?: string;
 
-    @IsBoolean()
-    @IsOptional()
-    isActive?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 }

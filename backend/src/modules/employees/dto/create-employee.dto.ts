@@ -2,56 +2,56 @@
 // DTO for creating an employee
 
 import {
-    IsBoolean,
-    IsDateString,
-    IsEmail,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsPositive,
-    IsString,
-    MaxLength,
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
 } from 'class-validator';
 
 export class CreateEmployeeDto {
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(50)
-    employeeId!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  employeeId!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(100)
-    firstName!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  firstName!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(100)
-    lastName!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  lastName!: string;
 
-    @IsEmail()
-    @IsNotEmpty()
-    email!: string;
+  @IsEmail()
+  @IsNotEmpty()
+  email!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(100)
-    department!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  department!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(100)
-    position!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  position!: string;
 
-    @IsNumber()
-    @IsPositive()
-    salary!: number;
+  @IsNumber()
+  @IsPositive()
+  salary!: number;
 
-    @IsDateString()
-    @IsNotEmpty()
-    hireDate!: string;
+  @IsDateString()
+  @IsNotEmpty()
+  hireDate!: string;
 
-    @IsBoolean()
-    @IsOptional()
-    isActive?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 }
